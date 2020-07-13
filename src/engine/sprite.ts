@@ -1,11 +1,13 @@
 import { Vector } from "./util/vector";
 import { Size } from "./util/size";
+import { TagManager } from "./manager/tag-manager";
 
 export class Sprite {
 
     // Variables
     private _position: Vector;
     private _dimension: Size;
+    private _tags: TagManager;
     private _update: ((context: CanvasRenderingContext2D | null) => void) | null;
 
     // Propriétés
@@ -20,6 +22,13 @@ export class Sprite {
      */
     public get dimension(): Size {
         return this._dimension;
+    }
+
+    /**
+     * Obtenir l'objet TagManager permettant la gestion des tags
+     */
+    public get tags(): TagManager {
+        return this._tags;
     }
 
     /**
@@ -40,6 +49,7 @@ export class Sprite {
     constructor(position: Vector, dimension: Size) {
         this._position = position;
         this._dimension = dimension;
+        this._tags = new TagManager();
         this._update = null;
     }
 
