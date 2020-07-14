@@ -1,6 +1,7 @@
 import { Sprite } from "./sprite";
+import { SpriteCanvasRenderingContext2D } from "./renderer/sprite-canvas-rendering-context-2d";
 
-export class Game2DCanvas {
+export class GameCanvas {
 
     // Variables
     private _selector: HTMLElement;
@@ -125,10 +126,7 @@ export class Game2DCanvas {
 
         this.clearFrame();
 
-        this._sprites.forEach(sprite => { 
-            sprite.update?.call(sprite, this.getContext());
-            this._isDebugMode && sprite.debug?.call(sprite, this.getContext());
-         });
+        this.updateSprites();
 
         requestAnimationFrame(this.updateFrame.bind(this));
     }
@@ -138,6 +136,22 @@ export class Game2DCanvas {
      */
     private clearFrame() {
         this.getContext()?.clearRect(0, 0, this._width, this._height);
+    }
+
+    /**
+     * Mise à jour des sprites
+     */
+    private updateSprites() {
+        this._sprites.forEach(sprite => { 
+            // Initialisation du l'objet permettant le rendu du Sprite
+            const spriteCanvasRenderingContext2D: SpriteCanvasRenderingContext2D = new SpriteCanvasRenderingContext2D(this.getContext(), sprite.position, sprite.dimension);
+            // Mise à jour du Sprite, appel de la fonction d'update
+            sprite.update?.call(sprite, spriteCanvasRenderingContext2D);
+            // Mise à jour du Sprite, appel de la fonction de debug si besoin
+            if (this._isDebugMode) {
+                sprite.debug?.call(sprite, spriteCanvasRenderingContext2D);
+            }
+         });
     }
 
     /**

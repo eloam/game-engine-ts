@@ -11,11 +11,18 @@ export class Size {
     public get width(): number {
         return this._width;
     }
+    public set width(value: number) {
+        this._width = value;
+    }
+
     /**
-     * Obtenir la hauteur
+     * Obtenir / définir la hauteur
      */
     public get height(): number {
         return this._height;
+    }
+    public set height(value: number) {
+        this._height = value;
     }
 
     /**

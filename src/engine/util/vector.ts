@@ -8,16 +8,23 @@ export class Vector {
 
     // Propriétés
     /**
-     * Obtenir la valeur de l'abscisse
+     * Obtenir/définir la valeur de l'abscisse
      */
     public get x(): number {
         return this._x;
     }
+    public set x(value: number) {
+        this._x = value;
+    }
+    
     /**
-     * Obtenir la valeur de l'ordonnée
+     * Obtenir/définir la valeur de l'ordonnée
      */
     public get y(): number {
         return this._y;
+    }
+    public set y(value: number) {
+        this._y = value;
     }
 
     /**

@@ -1,6 +1,7 @@
 import { Vector } from "./util/vector";
 import { Size } from "./util/size";
 import { TagManager } from "./manager/tag-manager";
+import { SpriteCanvasRenderingContext2D } from "./renderer/sprite-canvas-rendering-context-2d";
 
 export class Sprite {
 
@@ -8,7 +9,7 @@ export class Sprite {
     private _position: Vector;
     private _dimension: Size;
     private _tags: TagManager;
-    private _update: ((context: CanvasRenderingContext2D | null) => void) | null;
+    private _update: ((context: SpriteCanvasRenderingContext2D) => void) | null;
 
     // Propriétés
     /**
@@ -34,10 +35,10 @@ export class Sprite {
     /**
      * Obtenir/définir la fonction permettant la mise à jour de la frame
      */
-    public get update(): ((context: CanvasRenderingContext2D | null) => void) | null {
+    public get update(): ((context: SpriteCanvasRenderingContext2D) => void) | null {
         return this._update;
     }
-    public set update(value: ((context: CanvasRenderingContext2D | null) => void) | null) {
+    public set update(value: ((renderer: SpriteCanvasRenderingContext2D) => void) | null) {
         this._update = value;
     }
 
@@ -56,31 +57,31 @@ export class Sprite {
     /**
      * Fonction permettant d'afficher les éléments de debug
      */
-    public debug(context: CanvasRenderingContext2D | null) {
+    public debug(renderer: SpriteCanvasRenderingContext2D) {
         // On conserve le style de trait afin de ne pas le modifier pas erreur s'il est déjà définit
-        const initialStrokeStyle: string | CanvasGradient | CanvasPattern = context!.strokeStyle;
+        const initialStrokeStyle: string | CanvasGradient | CanvasPattern = renderer.canvasContext!.strokeStyle;
         
         // Couleur et largeur de ligne
-        context!.strokeStyle = 'magenta';
-        context!.lineWidth = 2;
+        renderer.canvasContext!.strokeStyle = 'magenta';
+        renderer.canvasContext!.lineWidth = 1;
         
         // Création du contour du sprite
-        context?.strokeRect(this.position.x, this.position.y, this.dimension.width, this.dimension.height);
+        renderer.canvasContext?.strokeRect(this.position.x + 1, this.position.y + 1, this.dimension.width - 1, this.dimension.height - 1);
 
         // Création de la croix - 1ère ligne
-        context?.beginPath();
-        context?.moveTo(this.position.x, this.position.y);
-        context?.lineTo(this.position.x + this.dimension.width, this.position.y + this.dimension.height);
-        context?.stroke();
+        renderer.canvasContext?.beginPath();
+        renderer.canvasContext?.moveTo(this.position.x, this.position.y);
+        renderer.canvasContext?.lineTo(this.position.x + this.dimension.width, this.position.y + this.dimension.height);
+        renderer.canvasContext?.stroke();
         
         // Création de la coix - 2ème ligne
-        context?.beginPath();
-        context?.moveTo(this.position.x, this.position.y + this.dimension.height);
-        context?.lineTo(this.position.x + this.dimension.width, this.position.y);
-        context?.stroke();
+        renderer.canvasContext?.beginPath();
+        renderer.canvasContext?.moveTo(this.position.x, this.position.y + this.dimension.height);
+        renderer.canvasContext?.lineTo(this.position.x + this.dimension.width, this.position.y);
+        renderer.canvasContext?.stroke();
 
         // Réinitialisation du style de trait
-        context!.strokeStyle = initialStrokeStyle;
+        renderer.canvasContext!.strokeStyle = initialStrokeStyle;
     }
 
 }

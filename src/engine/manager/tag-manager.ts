@@ -1,5 +1,3 @@
-import { ErrorException } from "../util/exception";
-
 export class TagManager {
 
     // Variables
@@ -24,12 +22,10 @@ export class TagManager {
         tags.forEach(tag => {
             // Gestion des erreurs
             if (!pattern.test(tag)) {
-                new ErrorException(`The tag must respect the following criteria: any combination of lowercase letters, dashes (not at the beginning or at the end) and digits (tag: "${tag}")`);
-                return;
+                new Error(`The tag must respect the following criteria: any combination of lowercase letters, dashes (not at the beginning or at the end) and digits (tag: "${tag}")`);
             }
             if (this.contains(tag)) {
-                new ErrorException(`This tag already exists (tag: "${tag}")`);
-                return;
+                new Error(`This tag already exists (tag: "${tag}")`);
             }
 
             this._tags.push(tag);

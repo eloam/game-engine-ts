@@ -1,20 +1,36 @@
-import { Game2DCanvas } from "./engine/game-2d-canvas";
+import { GameCanvas } from "./engine/game-canvas";
 import { Vector } from "./engine/util/vector";
 import { Sprite } from "./engine/sprite";
 import { Size } from "./engine/util/size";
+import { SpriteCanvasRenderingContext2D } from "./engine/renderer/sprite-canvas-rendering-context-2d";
 
-const game: Game2DCanvas = new Game2DCanvas(document.body, 800, 600);
+const game: GameCanvas = new GameCanvas(document.body, 1280, 720);
 game.backgroundColor = "#eee";
 //game.isDebugMode = true;
 
-const sprite1 = new Sprite(new Vector(10, 30), new Size(300, 150));
-sprite1.update = function(context: CanvasRenderingContext2D | null) {
-    context!.fillStyle = 'green';
-    context?.fillRect(this.position.x, this.position.y, this.dimension.width, this.dimension.height);
-    this.position.add(1,1);
+// Version 1
+const sprite1 = new Sprite(new Vector(100, 150), new Size(300, 150));
+sprite1.update = function(renderer: SpriteCanvasRenderingContext2D) {
+    renderer.canvasContext!.fillStyle = 'green';
+    renderer.canvasContext?.fillRect(this.position.x, this.position.y, this.dimension.width, this.dimension.height);
+    this.position.add(1,0);
 }
-sprite1.tags.add('player', 'main-hero');
-
+sprite1.tags.add('player');
+sprite1.tags.add('main-hero');
 game.sprites.push(sprite1);
 
-console.log(sprite1.tags.list());
+// Version 2
+const sprite2 = new Sprite(new Vector(100, 300), new Size(300, 150));
+sprite2.update = function(renderer: SpriteCanvasRenderingContext2D) {
+    renderer.fillStyle('blue').fillRect();
+    this.position.add(1,0);
+}
+sprite2.tags.add('player', 'main-hero');
+game.sprites.push(sprite2);
+
+/*sprite1.update = function() {
+    this.renderer.fillStyle('green').fillRect().snapshot('player-frame-1');
+    this.renderer.removeSnapshot('player-frame-1');
+    var listSnapshots = this.renderer.snapshots;
+    this.position.add(1,1);
+}*/
