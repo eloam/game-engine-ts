@@ -2,13 +2,15 @@ import { Vector } from "../util/vector";
 import { Size } from "../util/size";
 import { Sprite } from "../sprite";
 import { Measures } from "../util/measure";
+import { Disposable } from "../util/dispose";
 
-export class SpriteCanvasRenderingContext2D {
+export class SpriteCanvasRenderingContext2D implements Disposable {
 
     // Variables
     private _canvasContext: CanvasRenderingContext2D | null;
     private _spritePosition: Vector;
     private _spriteDimension: Size;
+    private _canvasContextPathSaveCount: number;
 
     // Propriétés
     /**
@@ -25,6 +27,17 @@ export class SpriteCanvasRenderingContext2D {
         this._canvasContext = canvasContext;
         this._spritePosition = position;
         this._spriteDimension = dimension;
+        this._canvasContextPathSaveCount = 0;
+
+        this.initSprite();
+    }
+
+    /**
+     * Initialisation du Sprite
+     * Définit un rectangle transparant avec la propriété clip correspondant à la taille du Sprite, afin de pouvoir empêcher de dessiner en dehors
+     */
+    private initSprite() {
+        this.save().beginPath().fillStyle('transparent').rect().fill().clip().closePath();
     }
 
     /**
@@ -32,47 +45,31 @@ export class SpriteCanvasRenderingContext2D {
      * @param position 
      * @param dimension 
      */
-    private checkMeasures(position?: Vector, dimension?: Size): Measures {
+    private checkMeasures(x?: number, y?: number, width?: number, height?: number): Measures {
 
-        // Gestion des valeurs undefined
-        if (!position) {
-            position = new Vector(0,0);
+        // Gestion des valeurs undefined concernant les positions
+        if (!x) {
+            x = 0;
         }
-        if (!dimension) {
-            dimension = new Size(this._spriteDimension.width - position.x, this._spriteDimension.height - position.y);
-        }
-
-        // Création du vecteur contenant les positions absolues
-        const absolutePosition: Vector = new Vector(0,0).addByVector(this._spritePosition).addByVector(position);
-        
-        // -- Vérification de la position
-        // On vérifie si la position x est positionné dans les limites du Sprite
-        if (absolutePosition.x < this._spritePosition.x) {
-            absolutePosition.x = this._spritePosition.x;
-        } else if (absolutePosition.x > this._spritePosition.x + this._spriteDimension.width) {
-            absolutePosition.x = this._spritePosition.x + this._spriteDimension.width;
-        }
-        // On vérifie si la position y est positionné dans les limites du Sprite
-        if (absolutePosition.y < this._spritePosition.y) {
-            absolutePosition.y = this._spritePosition.y;
-        } else if (absolutePosition.y > this._spritePosition.y + this._spriteDimension.height) {
-            absolutePosition.y = this._spritePosition.y + this._spriteDimension.height;
+        if (!y) {
+            y = 0;
         }
 
-        // -- Vérification des dimensions
-        // On vérifie si la largeur est définie et la position absolue reste dans les limites du Sprite
-        if (dimension.width < 0) {
-            dimension.width = 0;
-        } else if (dimension.width > this._spriteDimension.width - position.x) {
-            dimension.width = this._spriteDimension.width - position.x;
+        // Gestion des valeurs undefined concernant les dimensions
+        if (!width) {
+            width = this._spriteDimension.width;
         }
-        // On vérifie si la hauteur est définie et la position absolue reste dans les limites du Sprite
-        if (dimension.height < 0) {
-            dimension.height = 0;
-        } else if (dimension.height > this._spriteDimension.height - position.y) {
-            dimension.height = this._spriteDimension.height - position.y;
+        if (!height) {
+            height = this._spriteDimension.height;
         }
 
+        // Calcul de la position absolu
+        const absolutePosition: Vector = new Vector(x, y).addByVector(this._spritePosition);
+
+        // On renseigne l'objet Size concernant les dimensions de l'objet qu'on souhaite dessiner
+        const dimension: Size = new Size(width, height);
+
+        // Retourne les mesures correctes concernant la réalisation du dessin dans le sprite courant
         return new Measures(absolutePosition, dimension);
     }
 
@@ -81,14 +78,56 @@ export class SpriteCanvasRenderingContext2D {
         return this;
     }
 
-    public fillRect(position?: Vector, dimension?: Size): SpriteCanvasRenderingContext2D {
-        const spriteMeasures: Measures = this.checkMeasures(position, dimension);
-        this._canvasContext?.fillRect(spriteMeasures.position.x, spriteMeasures.position.y, spriteMeasures.dimension.width, spriteMeasures.dimension.height);
+    public rect(x?: number, y?: number, width?: number, height?: number): SpriteCanvasRenderingContext2D {
+        const measures: Measures = this.checkMeasures(x, y, width, height);
+        this._canvasContext?.rect(measures.position.x, measures.position.y, measures.dimension.width, measures.dimension.height);
         return this;
     }
 
-    private test(): SpriteCanvasRenderingContext2D {
-        this._canvasContext?.fillRect
+    /**
+     * Remarque: On utilise pas la fonction fillRect() directement, car elle réalise la fonction beginPath() en fin de traitement ce qu'il la rend incompatible avec la fonction clip()
+     */
+    public fillRect(x?: number, y?: number, width?: number, height?: number): SpriteCanvasRenderingContext2D {
+        this.rect(x, y, width, height);
+        this.fill();
         return this;
+    }
+
+    public fill(): SpriteCanvasRenderingContext2D {
+        this._canvasContext?.fill();
+        return this;
+    }
+
+    public beginPath(): SpriteCanvasRenderingContext2D {
+        this._canvasContext?.beginPath();
+        return this;
+    }
+
+    public closePath(): SpriteCanvasRenderingContext2D {
+        this._canvasContext?.closePath();
+        return this;
+    }
+
+    public clip(): SpriteCanvasRenderingContext2D {
+        this._canvasContext?.clip();
+        return this;
+    }
+
+    public save(): SpriteCanvasRenderingContext2D {
+        this._canvasContext?.save();
+        this._canvasContextPathSaveCount += 1;
+        return this;
+    }
+
+    public restore(): SpriteCanvasRenderingContext2D {
+        this._canvasContext?.restore();
+        this._canvasContextPathSaveCount -= 1;
+        return this;
+    }
+
+    dispose(): void {
+        while(this._canvasContextPathSaveCount > 0) { 
+            this.restore();
+        }
     }
 }

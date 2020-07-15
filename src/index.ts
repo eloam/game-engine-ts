@@ -8,7 +8,7 @@ const game: GameCanvas = new GameCanvas(document.body, 1280, 720);
 game.backgroundColor = "#eee";
 //game.isDebugMode = true;
 
-// Version 1
+/*// Version 1
 const sprite1 = new Sprite(new Vector(100, 150), new Size(300, 150));
 sprite1.update = function(renderer: SpriteCanvasRenderingContext2D) {
     renderer.canvasContext!.fillStyle = 'green';
@@ -26,8 +26,19 @@ sprite2.update = function(renderer: SpriteCanvasRenderingContext2D) {
     this.position.add(1,0);
 }
 sprite2.tags.add('player', 'main-hero');
-game.sprites.push(sprite2);
+game.sprites.push(sprite2);*/
 
+// Version 3
+const sprite2 = new Sprite(new Vector(100, 300), new Size(300, 150));
+sprite2.update = function(renderer: SpriteCanvasRenderingContext2D) {
+    renderer.fillStyle('blue').fillRect().beginPath().fillStyle('green').fillRect(50, 50);
+    this.position.add(1,0);
+}
+//sprite2.tags.add('player', 'main-hero');
+game.sprites.add(sprite2);
+
+
+// Version vNext
 /*sprite1.update = function() {
     this.renderer.fillStyle('green').fillRect().snapshot('player-frame-1');
     this.renderer.removeSnapshot('player-frame-1');

@@ -1,5 +1,6 @@
 import { Sprite } from "./sprite";
 import { SpriteCanvasRenderingContext2D } from "./renderer/sprite-canvas-rendering-context-2d";
+import { SpriteManager } from "./manager/sprite-manager";
 
 export class GameCanvas {
 
@@ -9,8 +10,7 @@ export class GameCanvas {
     private _width: number;
     private _height: number;
     private _isDebugMode: boolean;
-
-    private _sprites: Sprite[];
+    private _sprites: SpriteManager;
 
     // Propriétés
     /**
@@ -50,7 +50,7 @@ export class GameCanvas {
     /**
      * Obtenir les sprites du canvas
      */
-    public get sprites(): Sprite[] {
+    public get sprites(): SpriteManager {
         return this._sprites;
     }
 
@@ -86,7 +86,7 @@ export class GameCanvas {
         this._width = this.defineCanvasWidth(width);
         this._height = this.defineCanvasHeight(height);
         this._isDebugMode = false;
-        this._sprites = [];
+        this._sprites = new SpriteManager(this.getContext());
 
         this.init();
     }
@@ -126,7 +126,7 @@ export class GameCanvas {
 
         this.clearFrame();
 
-        this.updateSprites();
+        this.sprites.triggerUpdateEvents();
 
         requestAnimationFrame(this.updateFrame.bind(this));
     }
@@ -136,22 +136,6 @@ export class GameCanvas {
      */
     private clearFrame() {
         this.getContext()?.clearRect(0, 0, this._width, this._height);
-    }
-
-    /**
-     * Mise à jour des sprites
-     */
-    private updateSprites() {
-        this._sprites.forEach(sprite => { 
-            // Initialisation du l'objet permettant le rendu du Sprite
-            const spriteCanvasRenderingContext2D: SpriteCanvasRenderingContext2D = new SpriteCanvasRenderingContext2D(this.getContext(), sprite.position, sprite.dimension);
-            // Mise à jour du Sprite, appel de la fonction d'update
-            sprite.update?.call(sprite, spriteCanvasRenderingContext2D);
-            // Mise à jour du Sprite, appel de la fonction de debug si besoin
-            if (this._isDebugMode) {
-                sprite.debug?.call(sprite, spriteCanvasRenderingContext2D);
-            }
-         });
     }
 
     /**

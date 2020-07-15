@@ -51,6 +51,14 @@ export class TagManager {
     }
 
     /**
+     * Remplace un tag par un autre
+     * @param tag Nom du tag
+     */
+    public replace(tag: string) {
+        // TODO : Soon
+    }
+
+    /**
      * Retoure la liste des tags
      */
     public list(): string[] {
