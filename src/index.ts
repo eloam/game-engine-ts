@@ -29,10 +29,18 @@ sprite2.tags.add('player', 'main-hero');
 game.sprites.push(sprite2);*/
 
 // Version 3
-const sprite2 = new Sprite(new Vector(100, 300), new Size(300, 150));
+const sprite2 = new Sprite(new Vector(500, 500), new Size(300, 150));
 sprite2.update = function(renderer: SpriteCanvasRenderingContext2D) {
     renderer.fillStyle('blue').fillRect().beginPath().fillStyle('green').fillRect(50, 50);
-    this.position.add(1,0);
+    //this.position.add(1,0);
+    this.debug(renderer);
+
+    renderer.beginPath().restore().fillStyle('brown').fillRect(-150, -150, 50, 50);
+
+    renderer.clearRect();
+
+    this.debug(renderer);
+    renderer.beginPath().restore().fillStyle('brown').fillRect(-30, -30, 50, 50).lineCap("butt");
 }
 //sprite2.tags.add('player', 'main-hero');
 game.sprites.add(sprite2);

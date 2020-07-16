@@ -55,33 +55,10 @@ export class Sprite {
     }
 
     /**
-     * Fonction permettant d'afficher les éléments de debug
+     * Affiche les contours du sprite
      */
     public debug(renderer: SpriteCanvasRenderingContext2D) {
-        // On conserve le style de trait afin de ne pas le modifier pas erreur s'il est déjà définit
-        const initialStrokeStyle: string | CanvasGradient | CanvasPattern = renderer.canvasContext!.strokeStyle;
-        
-        // Couleur et largeur de ligne
-        renderer.canvasContext!.strokeStyle = 'magenta';
-        renderer.canvasContext!.lineWidth = 1;
-        
-        // Création du contour du sprite
-        renderer.canvasContext?.strokeRect(this.position.x + 1, this.position.y + 1, this.dimension.width - 1, this.dimension.height - 1);
-
-        // Création de la croix - 1ère ligne
-        renderer.canvasContext?.beginPath();
-        renderer.canvasContext?.moveTo(this.position.x, this.position.y);
-        renderer.canvasContext?.lineTo(this.position.x + this.dimension.width, this.position.y + this.dimension.height);
-        renderer.canvasContext?.stroke();
-        
-        // Création de la coix - 2ème ligne
-        renderer.canvasContext?.beginPath();
-        renderer.canvasContext?.moveTo(this.position.x, this.position.y + this.dimension.height);
-        renderer.canvasContext?.lineTo(this.position.x + this.dimension.width, this.position.y);
-        renderer.canvasContext?.stroke();
-
-        // Réinitialisation du style de trait
-        renderer.canvasContext!.strokeStyle = initialStrokeStyle;
+        renderer.beginPath().strokeStyle('magenta').lineWidth(8).strokeRect();
     }
 
 }
