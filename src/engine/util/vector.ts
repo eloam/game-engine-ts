@@ -79,36 +79,24 @@ export class Vector {
 
     /**
      * Ajoute l'abscisse et l'ordonnée au vecteur courant
+     * @param vector Abscisse
+     */
+    public add(vector: Vector): Vector 
+    /**
+     * Ajoute l'abscisse et l'ordonnée au vecteur courant
      * @param x Abscisse
      * @param y Ordonnée
      */
-    public add(x: number, y: number): Vector {
-        this._x += x;
-        this._y += y;
-
-        return this;
-    }
-
-    /**
-     * Ajoute l'abscisse et l'ordonnée du vecteur au vecteur courant
-     * @param vector Objet de type Vector
-     */
-    public addByVector(vector: Vector): Vector {
-        this._x += vector.x;
-        this._y += vector.y;
-
-        return this;
-    }
-
-    /**
-     * Soustrait l'abscisse et l'ordonnée au vecteur courant
-     * @param x Abscisse
-     * @param y Ordonnée
-     */
-    public subtract(x: number, y: number): Vector {
-        this._x -= x;
-        this._y -= y;
-
+    public add(x: number, y: number): Vector
+    public add(p1: any, p2?: any): Vector {
+        if (p1 instanceof Vector) {
+            const vector: Vector = p1;
+            this._x += vector.x;
+            this._y += vector.y;
+        } else {
+            this._x += p1;
+            this._y += p2;
+        }
         return this;
     }
 
@@ -116,45 +104,45 @@ export class Vector {
      * Soustrait l'abscisse et l'ordonnée du vecteur au vecteur courant
      * @param vector Objet de type Vector
      */
-    public subtractByVector(vector: Vector): Vector {
-        this._x -= vector.x;
-        this._y -= vector.y;
-
+    public subtract(vector: Vector): Vector
+    /**
+     * Soustrait l'abscisse et l'ordonnée au vecteur courant
+     * @param x Abscisse
+     * @param y Ordonnée
+     */
+    public subtract(x: number, y: number): Vector
+    public subtract(p1: any, p2?: any): Vector {
+        if (p1 instanceof Vector) {
+            const vector: Vector = p1;
+            this._x -= vector.x;
+            this._y -= vector.y;
+        } else {
+            this._x -= p1;
+            this._y -= p2;
+        }
         return this;
     }
-
+    
+    /**
+     * Multiplie l'abscisse et l'ordonnée du vecteur au vecteur courant
+     * @param vector Objet de type Vector
+     */
+    public multiply(vector: Vector): Vector
     /**
      * Multiplie l'abscisse et l'ordonnée au vecteur courant
      * @param x Abscisse
      * @param y Ordonnée
      */
-    public multiply(x: number, y: number): Vector {
-        this._x *= x;
-        this._y *= y;
-
-        return this;
-    }
-
-    /**
-     * Multiplie l'abscisse et l'ordonnée du vecteur au vecteur courant
-     * @param vector Objet de type Vector
-     */
-    public multiplyByVector(vector: Vector): Vector {
-        this._x *= vector.x;
-        this._y *= vector.y;
-
-        return this;
-    }
-
-    /**
-     * Divise l'abscisse et l'ordonnée au vecteur courant
-     * @param x Abscisse
-     * @param y Ordonnée
-     */
-    public divide(x: number, y: number): Vector {
-        this._x /= x;
-        this._y /= y;
-
+    public multiply(x: number, y: number): Vector
+    public multiply(p1: any, p2?: any): Vector {
+        if (p1 instanceof Vector) {
+            const vector: Vector = p1;
+            this._x *= vector.x;
+            this._y *= vector.y;
+        } else {
+            this._x *= p1;
+            this._y *= p2;
+        }
         return this;
     }
 
@@ -162,27 +150,42 @@ export class Vector {
      * Divise l'abscisse et l'ordonnée du vecteur au vecteur courant
      * @param vector Objet de type Vector
      */
-    public diviseByVector(vector: Vector): Vector {
-        this._x /= vector.x;
-        this._y /= vector.y;
-
-        return this;
-    }
-
+    public divide(vector: Vector): Vector
     /**
-     * Vérifie que deux objets Vector sont identiques
-     * @param x Largeur
-     * @param y Hauteur
+     * Divise l'abscisse et l'ordonnée au vecteur courant
+     * @param x Abscisse
+     * @param y Ordonnée
      */
-    public equals(x: number, y: number): boolean {
-        return this._x === x && this._y === y;
+    public divide(x: number, y: number): Vector
+    public divide(p1: any, p2?: any): Vector {
+        if (p1 instanceof Vector) {
+            const vector: Vector = p1;
+            this._x /= vector.x;
+            this._y /= vector.y;
+        } else {
+            this._x /= p1;
+            this._y /= p2;
+        }
+        return this;
     }
 
     /**
      * Vérifie que deux objets Vector sont identiques
      * @param vector Objet de type Vector
      */
-    public equalsByVector(vector: Vector): boolean {
-        return this._x === vector.x && this._y === vector.y;
+    public equals(vector: Vector): boolean
+    /**
+     * Vérifie que deux objets Vector sont identiques
+     * @param x Abscisse
+     * @param y Ordonnée
+     */
+    public equals(x: number, y: number): boolean
+    public equals(p1: any, p2?: any): boolean {
+        if (p1 instanceof Vector) {
+            const vector: Vector = p1;
+            return this._x === vector.x && this._y === vector.y;
+        } else {
+            return this._x === p1 && this._y === p2;
+        }
     }
 }

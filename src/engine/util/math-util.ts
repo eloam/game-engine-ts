@@ -1,3 +1,5 @@
+import { Vector } from "./vector";
+
 export class MathUtil {
 
     /**

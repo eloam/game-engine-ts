@@ -47,9 +47,26 @@ export class Sprite {
      * @param position Vecteur représentant les valeurs x et y du Sprite 
      * @param dimension Size représentant les valeurs largeur et hauteur du Sprite
      */
-    constructor(position: Vector, dimension: Size) {
-        this._position = position;
-        this._dimension = dimension;
+    
+    constructor(position: Vector, dimension: Size) 
+    constructor(width: number, height: number)
+    constructor(x: number, y: number, width: number, height: number)
+    constructor(p1: any, p2: any, p3?: any, p4?: any) {
+
+        if (typeof p1 === "number" && typeof p2 === "number" && typeof p3 === "number" && typeof p4 === "number") {
+            this._position = new Vector(p1, p2);
+            this._dimension = new Size(p3, p4);
+        } else if (typeof p1 === "number" && typeof p2 === "number") {
+            this._position = new Vector(0, 0);
+            this._dimension = new Size(p1, p2);
+        } else if (p1 instanceof Vector && p2 instanceof Size) {
+            this._position = p1;
+            this._dimension = p2;
+        } else {
+            this._position = new Vector(0, 0);
+            this._dimension = new Size(0, 0);
+        }
+
         this._tags = new TagManager();
         this._update = null;
     }

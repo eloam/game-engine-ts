@@ -20,8 +20,9 @@ export class SpriteManager {
      * Ajouter un sprite
      * @param sprite Sprite à ajouter
      */
-    public add(sprite: Sprite) {
+    public add(sprite: Sprite): Sprite {
         this._sprites.push(sprite);
+        return sprite;
     }
 
     /**

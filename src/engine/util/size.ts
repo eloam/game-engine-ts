@@ -34,22 +34,25 @@ export class Size {
         this._width = Math.round(width);
         this._height = Math.round(height);
     }
-
+  
     // Méthodes
-    /**
-     * Vérifie que deux objets Size sont identiques
-     * @param width Largeur
-     * @param height Hauteur
-     */
-    public equals(width: number, height: number): boolean {
-        return this._width === width && this._height === height;
-    }
-
     /**
      * Vérifie que deux objets Size sont identiques
      * @param size Objet de type Size
      */
-    public equalsBySize(size: Size): boolean {
-        return this._width === size.width && this._height === size.height;
+    public equals(size: Size): boolean
+        /**
+     * Vérifie que deux objets Size sont identiques
+     * @param width Largeur
+     * @param height Hauteur
+     */
+    public equals(width: number, height: number): boolean
+    public equals(p1: any, p2?: any): boolean {
+        if (p1 as Size) {
+            const size: Size = p1;
+            return this._width === size.width && this._height === size.height;
+        } else {
+            return this._width === p1 && this._height === p2;
+        }
     }
 }
