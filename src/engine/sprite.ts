@@ -75,7 +75,7 @@ export class Sprite {
      * Affiche les contours du sprite
      */
     public debug(renderer: SpriteCanvasRenderingContext2D) {
-        renderer.beginPath().strokeStyle('magenta').lineWidth(8).strokeRect();
+        renderer.beginPath().strokeStyle('magenta').lineWidth(8).strokeRect().beginPath();
     }
 
 }

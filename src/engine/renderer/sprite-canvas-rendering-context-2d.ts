@@ -40,9 +40,11 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
         // Enregistre l'état complet du sprite, dans le but de pouvoir effectuer un restore() et annuler le clipping du sprite
         this._canvasContext?.save();
         // Création du rectangle représentant le sprite
-        this.beginPath().fillStyle('transparent').rect().fill().clip().closePath();
+        this.beginPath().fillStyle('transparent').fillRect().clip();
         // Déplace le point de départ d'un nouveau sous-chemin vers les coordonnées absolue du sprite
         this.moveTo();
+        // On reset le chemin
+        this.beginPath();
     }
 
     /**
