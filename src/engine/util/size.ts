@@ -8,20 +8,20 @@ export class Size {
     /**
      * Obtenir la largeur
      */
-    public get width(): number {
+    public get w(): number {
         return this._width;
     }
-    public set width(value: number) {
+    public set w(value: number) {
         this._width = value;
     }
 
     /**
      * Obtenir / définir la hauteur
      */
-    public get height(): number {
+    public get h(): number {
         return this._height;
     }
-    public set height(value: number) {
+    public set h(value: number) {
         this._height = value;
     }
 
@@ -50,7 +50,7 @@ export class Size {
     public equals(p1: any, p2?: any): boolean {
         if (p1 as Size) {
             const size: Size = p1;
-            return this._width === size.width && this._height === size.height;
+            return this._width === size.w && this._height === size.h;
         } else {
             return this._width === p1 && this._height === p2;
         }

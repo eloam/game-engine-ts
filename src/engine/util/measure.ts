@@ -2,11 +2,11 @@ import { Vector } from "./vector";
 import { Size } from "./size";
 
 export class Measures {
-    public position: Vector;
-    public dimension: Size;
+    public pos: Vector;
+    public size: Size;
 
     constructor(position: Vector, dimension: Size) {
-        this.position = position;
-        this.dimension = dimension;
+        this.pos = position;
+        this.size = dimension;
     }
 }

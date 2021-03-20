@@ -1,6 +1,6 @@
-import { Sprite } from "./sprite";
+import { Sprite } from "./objects/sprite";
 import { SpriteCanvasRenderingContext2D } from "./renderer/sprite-canvas-rendering-context-2d";
-import { SpriteManager } from "./manager/sprite-manager";
+import { SpriteManager } from "./managers/sprite-manager";
 
 export class GameCanvas {
 
@@ -126,7 +126,7 @@ export class GameCanvas {
 
         this.clearFrame();
 
-        this.sprites.triggerUpdateEvents();
+        this.sprites.updateAll();
 
         requestAnimationFrame(this.updateFrame.bind(this));
     }

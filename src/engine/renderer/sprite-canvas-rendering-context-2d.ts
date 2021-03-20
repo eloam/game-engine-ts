@@ -1,6 +1,6 @@
 import { Vector } from "../util/vector";
 import { Size } from "../util/size";
-import { Sprite } from "../sprite";
+import { Sprite } from "../objects/sprite";
 import { Measures } from "../util/measure";
 import { Disposable } from "../util/dispose";
 
@@ -52,7 +52,7 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
      * @param position 
      * @param dimension 
      */
-    private checkMeasures(x?: number, y?: number, width?: number, height?: number): Measures {
+    private getRelativesMeasures(x?: number, y?: number, width?: number, height?: number): Measures {
 
         // Gestion des valeurs undefined concernant les positions
         if (!x) {
@@ -64,10 +64,10 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
 
         // Gestion des valeurs undefined concernant les dimensions
         if (!width) {
-            width = this._spriteDimension.width;
+            width = this._spriteDimension.w;
         }
         if (!height) {
-            height = this._spriteDimension.height;
+            height = this._spriteDimension.h;
         }
 
         // Calcul de la position absolu
@@ -101,12 +101,15 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     public drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): SpriteCanvasRenderingContext2D
     public drawImage(p1: CanvasImageSource, p2: number, p3: number, p4?: number, p5?: number, p6?: number, p7?: number, p8?: number, p9?: number) {
 
-        if (p1 && p2 && p3 && p4 && p5 && p6 && p7 && p8 && p9) {
-            this._canvasContext?.drawImage(p1, p2, p3, p4, p5, p6, p7, p8, p9);
-        } else if (p1 && p2 && p3 && p4 && p5) {
-            this._canvasContext?.drawImage(p1, p2, p3, p4, p5);
+        if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null && p9 != null) {
+            const measures: Measures = this.getRelativesMeasures(p6, p7);
+            this._canvasContext?.drawImage(p1, p2, p3, p4, p5, measures.pos.x, measures.pos.y, p8, p9);
+        } else if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null) {
+            const measures: Measures = this.getRelativesMeasures(p2, p3);
+            this._canvasContext?.drawImage(p1, measures.pos.x, measures.pos.y, p4, p5);
         } else {
-            this._canvasContext?.drawImage(p1, p2, p3);
+            const measures: Measures = this.getRelativesMeasures(p2, p3);
+            this._canvasContext?.drawImage(p1, measures.pos.x, measures.pos.y);
         }
 
         return this;
@@ -189,9 +192,9 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     }
 
     public createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient {
-        const measures1: Measures = this.checkMeasures(x0, y0);
-        const measures2: Measures = this.checkMeasures(x1, y1);
-        return this._canvasContext!.createLinearGradient(measures1.position.x, measures1.position.y, measures2.position.x, measures2.position.y);
+        const measures1: Measures = this.getRelativesMeasures(x0, y0);
+        const measures2: Measures = this.getRelativesMeasures(x1, y1);
+        return this._canvasContext!.createLinearGradient(measures1.pos.x, measures1.pos.y, measures2.pos.x, measures2.pos.y);
     }
 
     public createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null {
@@ -199,9 +202,9 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     }
 
     public createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient {
-        const measures1: Measures = this.checkMeasures(x0, y0);
-        const measures2: Measures = this.checkMeasures(x1, y1);
-        return this._canvasContext!.createRadialGradient(measures1.position.x, measures1.position.y, r0, measures2.position.x, measures2.position.y, r1);
+        const measures1: Measures = this.getRelativesMeasures(x0, y0);
+        const measures2: Measures = this.getRelativesMeasures(x1, y1);
+        return this._canvasContext!.createRadialGradient(measures1.pos.x, measures1.pos.y, r0, measures2.pos.x, measures2.pos.y, r1);
     }
 
     //#endregion
@@ -261,26 +264,26 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     //#region CanvasPath
 
     public arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y);
-        this._canvasContext?.arc(measures.position.x, measures.position.y, radius, startAngle, endAngle, anticlockwise);
+        const measures: Measures = this.getRelativesMeasures(x, y);
+        this._canvasContext?.arc(measures.pos.x, measures.pos.y, radius, startAngle, endAngle, anticlockwise);
         return this;
     }
 
     public arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): SpriteCanvasRenderingContext2D {
-        const measures1: Measures = this.checkMeasures(x1, y1);
-        const measures2: Measures = this.checkMeasures(x2, y2);
-        this._canvasContext?.arcTo(measures1.position.x, measures1.position.y, measures2.position.x, measures2.position.y, radius);
+        const measures1: Measures = this.getRelativesMeasures(x1, y1);
+        const measures2: Measures = this.getRelativesMeasures(x2, y2);
+        this._canvasContext?.arcTo(measures1.pos.x, measures1.pos.y, measures2.pos.x, measures2.pos.y, radius);
         return this;
     }
 
     public bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): SpriteCanvasRenderingContext2D {
-        const controlMeasures1: Measures = this.checkMeasures(cp1x, cp1y);
-        const controlMeasures2: Measures = this.checkMeasures(cp2x, cp2y);
-        const measures: Measures = this.checkMeasures(x, y);
+        const controlMeasures1: Measures = this.getRelativesMeasures(cp1x, cp1y);
+        const controlMeasures2: Measures = this.getRelativesMeasures(cp2x, cp2y);
+        const measures: Measures = this.getRelativesMeasures(x, y);
         this._canvasContext?.bezierCurveTo(
-            controlMeasures1.position.x, controlMeasures1.position.y,
-            controlMeasures2.position.x, controlMeasures2.position.y,
-            measures.position.x, measures.position.y);
+            controlMeasures1.pos.x, controlMeasures1.pos.y,
+            controlMeasures2.pos.x, controlMeasures2.pos.y,
+            measures.pos.x, measures.pos.y);
         return this;
     }
 
@@ -290,35 +293,35 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     }
 
     public ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, anticlockwise?: boolean): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y);
-        this._canvasContext?.ellipse(measures.position.x, measures.position.y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+        const measures: Measures = this.getRelativesMeasures(x, y);
+        this._canvasContext?.ellipse(measures.pos.x, measures.pos.y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
         return this;
     }
 
     public lineTo(x?: number, y?: number): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y);
-        this._canvasContext?.lineTo(measures.position.x, measures.position.y)
+        const measures: Measures = this.getRelativesMeasures(x, y);
+        this._canvasContext?.lineTo(measures.pos.x, measures.pos.y)
         return this;
     }
 
     public moveTo(x?: number, y?: number): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y);
-        this._canvasContext?.moveTo(measures.position.x, measures.position.y)
+        const measures: Measures = this.getRelativesMeasures(x, y);
+        this._canvasContext?.moveTo(measures.pos.x, measures.pos.y)
         return this;
     }
 
     public quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): SpriteCanvasRenderingContext2D {
-        const controlMeasures: Measures = this.checkMeasures(cpx, cpy);
-        const measures: Measures = this.checkMeasures(x, y);
+        const controlMeasures: Measures = this.getRelativesMeasures(cpx, cpy);
+        const measures: Measures = this.getRelativesMeasures(x, y);
         this._canvasContext?.quadraticCurveTo(
-            controlMeasures.position.x, controlMeasures.position.y,
-            measures.position.x, measures.position.y);
+            controlMeasures.pos.x, controlMeasures.pos.y,
+            measures.pos.x, measures.pos.y);
         return this;
     }
    
     public rect(x?: number, y?: number, width?: number, height?: number): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y, width, height);
-        this._canvasContext?.rect(measures.position.x, measures.position.y, measures.dimension.width, measures.dimension.height);
+        const measures: Measures = this.getRelativesMeasures(x, y, width, height);
+        this._canvasContext?.rect(measures.pos.x, measures.pos.y, measures.size.w, measures.size.h);
         return this;
     }
 
@@ -382,8 +385,8 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     //#region CanvasRect
 
     public clearRect(x?: number, y?: number, width?: number, height?: number): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y, width, height);
-        this._canvasContext?.clearRect(measures.position.x, measures.position.y, measures.dimension.width, measures.dimension.height);
+        const measures: Measures = this.getRelativesMeasures(x, y, width, height);
+        this._canvasContext?.clearRect(measures.pos.x, measures.pos.y, measures.size.w, measures.size.h);
         return this;
     }
 
@@ -452,8 +455,8 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     //#region CanvasText
 
     public fillText(text: string, x?: number, y?: number, maxWidth?: number): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y);
-        this._canvasContext?.fillText(text, measures.position.x, measures.position.y, maxWidth);
+        const measures: Measures = this.getRelativesMeasures(x, y);
+        this._canvasContext?.fillText(text, measures.pos.x, measures.pos.y, maxWidth);
         return this;
     }
 
@@ -462,8 +465,8 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
     }
 
     public strokeText(text: string, x?: number, y?: number, maxWidth?: number): SpriteCanvasRenderingContext2D {
-        const measures: Measures = this.checkMeasures(x, y);
-        this._canvasContext?.strokeText(text, measures.position.x, measures.position.y, maxWidth);
+        const measures: Measures = this.getRelativesMeasures(x, y);
+        this._canvasContext?.strokeText(text, measures.pos.x, measures.pos.y, maxWidth);
         return this;
     }
 
@@ -550,7 +553,7 @@ export class SpriteCanvasRenderingContext2D implements Disposable {
 
     //#endregion
 
-    dispose(): void {
+    public dispose(): void {
         while (this._canvasContextPathSaveCount > 0) {
             this.restore();
         }
